@@ -556,6 +556,35 @@
                     saveProgress();
                     if (mistakes >= 4) {
                         status.textContent = "Game Over";
+
+                        submitBtn.disabled = true;
+                        clearBtn.disabled = true;
+
+                        const remainingCategories = {};
+
+                        unsolvedCards.forEach(card => {
+                            if (!remainingCategories[card.category]) {
+                                remainingCategories[card.category] = [];
+                            }
+
+                            remainingCategories[card.category].push(card);
+                        });
+
+                        Object.keys(remainingCategories).forEach(categoryName => {
+                            solvedGroups.push({
+                                cards: remainingCategories[categoryName],
+                                category: categoryName,
+                                color: categoriesColor[categoryName]
+                            });
+                        });
+
+                        unsolvedCards = [];
+                        selected = [];
+
+                        setTimeout(() => {
+                            renderBoard();
+                            saveProgress();
+                        }, 500);
                     }
                 }
             });
