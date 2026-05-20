@@ -285,9 +285,13 @@
             </div>
             <button class="corner-link" onclick="location.href='index.html';pulse(this)">Knockoff Word</button>
             <div id="status"></div>
-
         </div>
     </section>
+    <dialog id="win">
+            <button class="close-btn" aria-label="close">&times;</button>
+            <p style="font-size: 1.5rem; font-weight: bold; color:green;">You won!</p>
+            <button id="reste" onclick="reset(); pulse(this)">New Word</button>
+    </dialog>
     <script>
         async function loadConnect() {
             function cookieSetter() {
@@ -357,6 +361,8 @@
             let solvedGroups = [];
 
             let selected = [];
+
+            let lose = false;
 
             let mistakes = 0;
 
@@ -513,6 +519,8 @@
                         submitBtn.disabled = false;
                         clearBtn.disabled = false;
                         if (solvedGroups.length === 4) {
+                            lose = true;
+                            updateMistakes();
                             const status = document.getElementById("status");
                             if (mistakes === 0) {
                                 status.textContent = "Perfect! No mistakes.";
@@ -556,7 +564,8 @@
                     saveProgress();
                     if (mistakes >= 4) {
                         status.textContent = "Game Over";
-
+                        lose = true;
+                        updateMistakes();
                         submitBtn.disabled = true;
                         clearBtn.disabled = true;
 
@@ -592,8 +601,16 @@
 
                 const dots = document.querySelectorAll(".dot");
 
-                for (let i = 0; i < mistakes; i++) {
-                    dots[i].classList.add("lost");
+                if (lose){
+                    document.getElementById("mistakes").style.display = "none";
+                    for (let i = 0; i < mistakes; i++) {
+                        dots[i].style.display = "none";
+                    }
+                }
+                else {
+                    for (let i = 0; i < mistakes; i++) {
+                        dots[i].classList.add("lost");
+                    }
                 }
             }
 
