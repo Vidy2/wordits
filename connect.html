@@ -331,11 +331,20 @@
                 return null;
             }
             cookieSetter();
+            const colors = [
+                "#f9df6d",
+                "#a0c35a",
+                "#b0c4ef",
+                "#ba81c5"
+            ];
             const response = await fetch("connect.json");
             const data = await response.json();
 
             const categories = data.categories;
-
+            const categoriesColor = {};
+            categories.forEach((c, index) => {
+                categoriesColor[c.title] = colors[index];
+            });
             const cards = categories.flatMap(category =>
                 category.cards.map(card => ({
                     ...card,
@@ -363,13 +372,6 @@
 
                 mistakes = savedState.mistakes || 0;
             }
-
-            const colors = [
-                "#f9df6d",
-                "#a0c35a",
-                "#b0c4ef",
-                "#ba81c5"
-            ];
 
             const board = document.getElementById("board");
 
@@ -499,7 +501,7 @@
                         solvedGroups.push({
                             cards: chosenCards,
                             category: category,
-                            color: colors[solvedGroups.length]
+                            color: categoriesColor[category]
                         });
                         unsolvedCards = unsolvedCards.filter(card => !selected.includes(card.content));
                         selected = [];
