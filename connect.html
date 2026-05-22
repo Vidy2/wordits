@@ -285,9 +285,13 @@
             </div>
             <button class="corner-link" onclick="location.href='index.html';pulse(this)">Knockoff Word</button>
             <div id="status"></div>
-
         </div>
     </section>
+    <dialog id="win">
+            <button class="close-btn" aria-label="close">&times;</button>
+            <p style="font-size: 1.5rem; font-weight: bold; color:green;">You won!</p>
+            <button id="reste" onclick="reset(); pulse(this)">New Word</button>
+    </dialog>
     <script>
         async function loadConnect() {
             function cookieSetter() {
@@ -331,11 +335,20 @@
                 return null;
             }
             cookieSetter();
+            const colors = [
+                "#f9df6d",
+                "#a0c35a",
+                "#b0c4ef",
+                "#ba81c5"
+            ];
             const response = await fetch("connect.json");
             const data = await response.json();
 
             const categories = data.categories;
-
+            const categoriesColor = {};
+            categories.forEach((c, index) => {
+                categoriesColor[c.title] = colors[index];
+            });
             const cards = categories.flatMap(category =>
                 category.cards.map(card => ({
                     ...card,
@@ -347,6 +360,8 @@
             let solvedGroups = [];
 
             let selected = [];
+
+            let lose = false;
 
             let mistakes = 0;
 
@@ -362,13 +377,6 @@
 
                 mistakes = savedState.mistakes || 0;
             }
-
-            const colors = [
-                "#f9df6d",
-                "#a0c35a",
-                "#b0c4ef",
-                "#ba81c5"
-            ];
 
             const board = document.getElementById("board");
 
@@ -498,7 +506,7 @@
                         solvedGroups.push({
                             cards: chosenCards,
                             category: category,
-                            color: colors[solvedGroups.length]
+                            color: categoriesColor[category]
                         });
                         unsolvedCards = unsolvedCards.filter(card => !selected.includes(card.content));
                         selected = [];
@@ -510,6 +518,8 @@
                         submitBtn.disabled = false;
                         clearBtn.disabled = false;
                         if (solvedGroups.length === 4) {
+                            lose = true;
+                            updateMistakes();
                             const status = document.getElementById("status");
                             if (mistakes === 0) {
                                 status.textContent = "Perfect! No mistakes.";
@@ -553,6 +563,36 @@
                     saveProgress();
                     if (mistakes >= 4) {
                         status.textContent = "Game Over";
+                        lose = true;
+                        updateMistakes();
+                        submitBtn.disabled = true;
+                        clearBtn.disabled = true;
+
+                        const remainingCategories = {};
+
+                        unsolvedCards.forEach(card => {
+                            if (!remainingCategories[card.category]) {
+                                remainingCategories[card.category] = [];
+                            }
+
+                            remainingCategories[card.category].push(card);
+                        });
+
+                        Object.keys(remainingCategories).forEach(categoryName => {
+                            solvedGroups.push({
+                                cards: remainingCategories[categoryName],
+                                category: categoryName,
+                                color: categoriesColor[categoryName]
+                            });
+                        });
+
+                        unsolvedCards = [];
+                        selected = [];
+
+                        setTimeout(() => {
+                            renderBoard();
+                            saveProgress();
+                        }, 500);
                     }
                 }
             });
@@ -560,8 +600,16 @@
 
                 const dots = document.querySelectorAll(".dot");
 
-                for (let i = 0; i < mistakes; i++) {
-                    dots[i].classList.add("lost");
+                if (lose){
+                    document.getElementById("mistakes").style.display = "none";
+                    for (let i = 0; i < mistakes; i++) {
+                        dots[i].style.display = "none";
+                    }
+                }
+                else {
+                    for (let i = 0; i < mistakes; i++) {
+                        dots[i].classList.add("lost");
+                    }
                 }
             }
 
