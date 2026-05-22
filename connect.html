@@ -342,7 +342,6 @@
                     category: category.title
                 }))
             );
-
             let unsolvedCards = [...cards].sort(() => Math.random() - 0.5);
 
             let solvedGroups = [];
@@ -407,7 +406,7 @@
                         button.textContent = card.content;
                         button.dataset.category = card.category;
                         button.dataset.content = card.content;
-
+                        
                         button.addEventListener("click",() => toggleSelect(button));
                         row.appendChild(button);
                     });
