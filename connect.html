@@ -26,7 +26,7 @@
         }
 
         #game {
-            width: min(95vw, 520px);
+            width: min(100vw, 720px);
         }
 
         #board {
@@ -43,13 +43,14 @@
         button.tile {
             word-wrap: break-word;
             width: 100%;
+            min-width: 10rem;
             max-width: 15rem;
             aspect-ratio: 1 / 1;
             border: none;
             border-radius: 12px;
             background: #e7e5dc;
             font-weight: bold;
-            font-size: clamp(0.8rem, 2vw, 1.1rem);
+            font-size: clamp(0.6rem, 2vw, 1.1rem);
             cursor: pointer;
             transition: 0.15s ease;
             color: #222;
