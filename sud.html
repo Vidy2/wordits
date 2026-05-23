@@ -53,7 +53,10 @@
             font-size: 2rem;
             transition: background-color 0.3s ease;
             background-color: #ccccbb;
-            border:none;
+        }
+        input:focus{
+            outline: none;
+            background-color: lightgray;
         }
         dialog {
             position: relative;
@@ -63,7 +66,7 @@
             }
         #status {
             font-size: clamp(1rem, 3vw, 1.5rem);
-            color: darkgreen;
+            color: red;
             margin-top: 1rem;
         }
         #board {
@@ -164,13 +167,15 @@
     <section>
         <h1>Knockoff Sud</h1>
         <div id = "board"></div>
+        <p id="status"></p>
     </section>
     <script>
         let board = Array(9).fill().map(() => Array(9).fill(0));
+        const status = document.getElementById("status");
         let solution = Array(9).fill().map(() => Array(9).fill(0));
         function check(board, row, col, num){
             for (let i = 0; i < 9; i++){
-                if (board[row][i] === num || board[i][col] === num || board[Math.floor(row/3) * 3 + Math.floor(col/3)][3 * Math.floor(col/3) + Math.floor(row/3) + i % 3] === num) return false;
+                if (board[row][i] === num || board[i][col] === num || board[Math.floor(row/3) * 3 + Math.floor(i/3)][3 * Math.floor(col/3) + i % 3] === num) return false;
             }
             return true;
         }
@@ -192,7 +197,7 @@
             return true;
         }
         function shuffle(array) {
-            for (let i = array.length - 1; i < 0; i--) {
+            for (let i = array.length - 1; i > 0; i--) {
                 let j = Math.floor(Math.random() * (i + 1));
                 [array[i], array[j]] = [array[j], array[i]];
             }
@@ -222,9 +227,14 @@
                     board[i][j] = 0;
                     solution[i][j] = 0;
                 }
-                generate(board);
             }
-            let cellGo = 60;
+            generate(board);
+            for (let i = 0; i < 9; i++){
+                for (let j = 0; j < 9; j++){
+                    solution[i][j] = board[i][j];
+                }
+            }
+            let cellGo = 40;
             while (cellGo > 0){
                 let row = Math.floor(Math.random() * 9);
                 let col = Math.floor(Math.random() * 9);
@@ -235,23 +245,84 @@
             }
         }
         function render(){
-            let board = document.getElementById("board");
-            board.innerHTML = "";
+            let board1 = document.getElementById("board");
+            board1.innerHTML = "";
+
             for (let i = 0; i < 9; i++){
                 let row = document.createElement("div");
                 row.classList.add("row");
+
                 for (let j = 0; j < 9; j++){
                     let cell = document.createElement("input");
-                    row.appendChild(cell);
-                    if (board[i][j] !== 0) {
-                        cell.innerText = board[i][j];
+
+                    cell.maxLength = 1;
+                    cell.type = "text";
+                    cell.inputMode = "numeric";
+
+                    if (i % 3 === 0 && i !== 0){
+                        cell.style.borderTop = "5px solid black";
                     }
-                    cell.value = board[i][j] === 0 ? "" : board[i][j];
+
+                    if (j % 3 === 0 && j !== 0){
+                        cell.style.borderLeft = "5px solid black";
+                    }
+
+                    if (board[i][j] !== 0){
+                        cell.value = board[i][j];
+                        cell.readOnly = true;
+                        cell.style.backgroundColor = "#bbb";
+                    }
+
                     cell.addEventListener("input", () => {
-                        
-                });
+                        let v = parseInt(cell.value);
+                        if (cell.value === ""){
+                            board[i][j] = 0;
+                            return;
+                        }
+                        if (isNaN(v) || v < 1 || v > 9){
+                            cell.value = "";
+
+                            status.textContent = "Can't put that";
+
+                            setTimeout(() => {
+                                status.textContent = "";
+                            }, 2000);
+
+                            return;
+                        }
+
+                        let old = board[i][j];
+                        board[i][j] = 0;
+
+                        if (check(board, i, j, v) && solution[i][j] === v){
+                            board[i][j] = v;
+
+                            cell.classList.add("pulse");
+
+                            setTimeout(() => {
+                                cell.classList.remove("pulse");
+                            }, 200);
+
+                        } else {
+                            board[i][j] = old;
+
+                            cell.value = "";
+
+                            status.textContent = "Wrong";
+
+                            setTimeout(() => {
+                                status.textContent = "";
+                            }, 2000);
+                        }
+                    });
+
+                    row.appendChild(cell);
+                }
+
+                board1.appendChild(row);
             }
         }
-    }
+    genGames();
+    render();
     </script>
 </body>
