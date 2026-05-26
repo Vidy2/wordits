@@ -113,7 +113,7 @@
         .corner-link-4 {
             position: fixed;
             bottom: 1vw;
-            right: 36.8vw;
+            right: 32vw;
             background: #fff;
             padding: 0.3rem 0.6rem;
             border-radius: 5px;
@@ -218,7 +218,6 @@
         <button class="corner-link" onclick="pulse(this);location.href='infinitel.html'">Infinite</button>
         <button class="corner-link-2" onclick="pulse(this);location.href='issue.html'">Spanish Unlimtited</button>
         <button class="corner-link-3" onclick="pulse(this);location.href='connect.html'">Connect</button>
-        <button class="corner-link-4" onclick="pulse(this);location.href='sud.html'">Sud</button>
     </section>
 
     <script>
@@ -428,6 +427,7 @@
                     if (guess[i] === temp[i]) {
                         input.style.backgroundColor = "#57af54";
                         keyButtons[guess[i]].style.backgroundColor = "#57af54";
+                        keyButtons[guess[i]].style.color = "white";
                         input.readOnly = true;
                         input.classList.add("pulse");
                         setTimeout(() => {
