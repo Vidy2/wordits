@@ -22,11 +22,11 @@
 
         h1 {
             margin-top: 1rem;
-            font-size: 3rem;
+            font-size: 2.7rem;
         }
 
         #game {
-            width: min(95vw, 520px);
+            width: min(100vw, 720px);
         }
 
         #board {
@@ -42,20 +42,20 @@
 
         button.tile {
             word-wrap: break-word;
-            word-break: break-all;
             width: 100%;
+            min-width: 10rem;
             max-width: 15rem;
             aspect-ratio: 1 / 1;
             border: none;
             border-radius: 12px;
             background: #e7e5dc;
             font-weight: bold;
-            font-size: clamp(0.8rem, 2vw, 1.1rem);
+            font-size: clamp(0.6rem, 2vw, 1.1rem);
             cursor: pointer;
             transition: 0.15s ease;
             color: #222;
             display: flex;
-            height: 7vw;
+            height: 7.25vw;
             align-items: center;
             justify-content: center;
             overflow: hidden;
@@ -124,11 +124,17 @@
             animation: shake 0.4s;
         }
         #status {
-            margin-top: 20px;
+            position: absolute;
+            top: 10%;
+            right: 48%;
+            border-radius: 4px;
+            background: black;
+            color: white;
             text-align: center;
-            min-height: 40px;
             font-weight: bold;
             font-size: 1rem;
+            padding: 8px 12px;
+            visibility: hidden;
         }
 
         .solved-group {
@@ -174,6 +180,7 @@
             padding: 0.3rem 0.6rem;
             border-radius: 5px;
             font-size: 1.5vw;
+            cursor: pointer;
         }
 
         @keyframes correctSlide {
@@ -232,6 +239,24 @@
             to {
                 transform: translateY(0);
                 opacity: 1;
+            }
+        }
+
+        @keyframes shake {
+            0% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-6px);
+            }
+            50% {
+                transform: translateX(6px);
+            }
+            75% {
+                transform: translateX(-6px);
+            }
+            100% {
+                transform: translateX(0);
             }
         }
 
@@ -313,7 +338,8 @@
                     solvedGroups,
                     unsolvedCards,
                     selected,
-                    mistakes
+                    mistakes,
+                    pastGuesses
                 };
 
                 let now = new Date();
@@ -335,6 +361,7 @@
                 return null;
             }
             cookieSetter();
+            let pastGuesses = [];
             const colors = [
                 "#f9df6d",
                 "#a0c35a",
@@ -355,7 +382,6 @@
                     category: category.title
                 }))
             );
-
             let unsolvedCards = [...cards].sort(() => Math.random() - 0.5);
 
             let solvedGroups = [];
@@ -369,6 +395,8 @@
             const savedState = loadProgress();
 
             if (savedState) {
+
+                passedGuesses = savedState.pastGuesses || [];
 
                 solvedGroups = savedState.solvedGroups || [];
 
@@ -415,7 +443,7 @@
                         button.textContent = card.content;
                         button.dataset.category = card.category;
                         button.dataset.content = card.content;
-
+                        
                         button.addEventListener("click",() => toggleSelect(button));
                         row.appendChild(button);
                     });
@@ -491,8 +519,23 @@
 
                 if (selected.length !== 4) {
                     document.getElementById("status").textContent = "Choose 4 tiles";
+                    document.getElementById("status").style.visibility = "visible";
+                    setTimeout(() => {
+                        document.getElementById("status").textContent = "";
+                        document.getElementById("status").style.visibility = "hidden";
+                    }, 2000);
                     return;
                 }
+                if (pastGuesses.includes([...selected].sort())) {
+                    document.getElementById("status").textContent = "Already guessed that";
+                    document.getElementById("status").style.visibility = "visible";
+                    setTimeout(() => {
+                        document.getElementById("status").textContent = "";
+                        document.getElementById("status").style.visibility = "hidden";
+                    }, 2000);
+                    return;
+                }
+                pastGuesses.push([[...selected].sort()]);
                 const chosenCards = unsolvedCards.filter(card => selected.includes(card.content));
                 const category = chosenCards[0].category;
                 const correct = chosenCards.every(card => card.category === category);
@@ -522,16 +565,23 @@
                             lose = true;
                             updateMistakes();
                             const status = document.getElementById("status");
+                            submitBtn.style.opacity = 0;
+                            clearBtn.style.opacity = 0;
                             if (mistakes === 0) {
                                 status.textContent = "Perfect! No mistakes.";
+                                status.style.visibility = "visible";
                             } else if (mistakes === 1) {
                                 status.textContent = "Great job! Only 1 mistake.";
+                                status.style.visibility = "visible";
                             } else if (mistakes === 2) {
                                 status.textContent = "Good job! 2 mistakes.";
+                                status.style.visibility = "visible";
                             } else if (mistakes === 3) {
                                 status.textContent = "Close win! 3 mistakes.";
+                                status.style.visibility = "visible";
                             } else {
                                 status.textContent = "Solved.";
+                                status.style.visibility = "visible";
                             }
                         }
                     }, 700);
@@ -545,13 +595,19 @@
                     updateMistakes();
                     const status = document.getElementById("status");
                     if (oneAway) {
-                        setTimeout(() => {
-                            status.textContent = "One Away";
-                        }, 2000);
+                        status.textContent = "One away...";
+                        status.style.visibility = "visible";
+                    setTimeout(() => {
+                        status.textContent = "";
+                        status.style.visibility = "hidden";
+                    }, 2000);
                     } else {
-                        setTimeout(() => {
-                            status.textContent = "Incorrect";
-                        }, 2000);
+                        status.textContent = "Incorrect";
+                        status.style.visibility = "visible";
+                    setTimeout(() => {
+                        status.textContent = "";
+                        status.style.visibility = "hidden";
+                    }, 2000);
                     }
                     const selectedButtons = document.querySelectorAll(".selected");
                     selectedButtons.forEach(btn => {
@@ -567,9 +623,14 @@
                     selected = [];
                     saveProgress();
                     if (mistakes >= 4) {
+                        status.style.visibility = "visible";
                         status.textContent = "Game Over";
                         lose = true;
                         updateMistakes();
+                        submitBtn.style.opacity = 0;
+                        submitBtn.disabled = true;
+                        clearBtn.disabled = true;
+                        clearBtn.style.opacity = 0;
                         submitBtn.disabled = true;
                         clearBtn.disabled = true;
 

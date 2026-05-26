@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knockoff Sud</title>
+    <link rel="icon" type="image/png" href="./word-thing.png">
+    <style>
+        html, body {
+            height: 100%;
+            overflow-x: hidden;
+        }
+        body {
+            font-family: inherit, serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+            overflow-x: hidden;
+            background-size: cover;
+            background-repeat: no-repeat;
+            min-height: 100dvh;
+            background-color: #e5e5da;
+        }
+
+        section {
+            padding: clamp(1rem, 4vw, 2rem);
+            text-align:center;
+        }
+
+        h1 {
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            text-align: center;
+        }
+
+        a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        button {
+            display: block;
+            margin: 0 auto;
+            padding: 0.5rem 1rem;
+            text-align: center;
+            border-radius: 20px;
+            border: 3px solid #ccc;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+        }
+        input{
+            text-transform: uppercase;
+            width: clamp(3rem, 12vw, 5rem);
+            height: clamp(3rem, 12vw, 5rem);
+            text-align: center;
+            font-size: 2rem;
+            transition: background-color 0.3s ease;
+            background-color: #ccccbb;
+        }
+        input:focus{
+            outline: none;
+            background-color: lightgray;
+        }
+        dialog {
+            position: relative;
+            padding: 2rem;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            }
+        #status {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            color: red;
+            margin-top: 1rem;
+        }
+        #board {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .row1 {
+            margin-top: 0.5rem;
+        }
+        .corner-link {
+            position: fixed;
+            bottom: 1vw;
+            right: 1vw;
+            background: #fff;
+            padding: 0.3rem 0.6rem;
+            border-radius: 5px;
+            font-size: 1.5vw;
+        }
+        .corner-link-2 {
+            position: fixed;
+            bottom: 1vw;
+            right: 7.8vw;
+            background: #fff;
+            padding: 0.3rem 0.6rem;
+            border-radius: 5px;
+            font-size: 1.5vw;
+        }
+        .corner-link-3 {
+            position: fixed;
+            bottom: 1vw;
+            right: 22.3vw;
+            background: #fff;
+            padding: 0.3rem 0.6rem;
+            border-radius: 5px;
+            font-size: 1.5vw;
+        }
+        .corner-link-4 {
+            position: fixed;
+            bottom: 1vw;
+            right: 36.8vw;
+            background: #fff;
+            padding: 0.3rem 0.6rem;
+            border-radius: 5px;
+            font-size: 1.5vw;
+        }
+        .pulse {
+            animation: pulse 0.2s ease;
+        }
+        .row {
+            margin-bottom: 0.2rem;
+            gap: 0.3rem;
+            display: flex
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+        @media (max-width: 600px) {
+            #keyboard button {
+                font-size: 0.7rem;
+                padding: 0.3rem 0.45rem;
+            }
+            h2 {
+                font-size: 2rem;
+            }
+            .row1 {
+                font-size:0.2vw;
+            }
+            .row2 {
+                font-size:0.2vw;
+            }
+            .row3 {
+                font-size:0.2vw;
+            }
+            .corner-link-2 {
+                right: 12vw;
+            }
+            input {
+                width: 2.5rem;
+                height: 2.5rem;
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section>
+        <h1>Knockoff Sud</h1>
+        <div id = "board"></div>
+        <p id="status"></p>
+    </section>
+    <script>
+        let board = Array(9).fill().map(() => Array(9).fill(0));
+        const status = document.getElementById("status");
+        let solution = Array(9).fill().map(() => Array(9).fill(0));
+        function check(board, row, col, num){
+            for (let i = 0; i < 9; i++){
+                if (board[row][i] === num || board[i][col] === num || board[Math.floor(row/3) * 3 + Math.floor(i/3)][3 * Math.floor(col/3) + i % 3] === num) return false;
+            }
+            return true;
+        }
+        function solve(board){
+            for (let row = 0; row < 9; row++){
+                for (let col = 0; col < 9; col++){
+                    if (board[row][col] === 0){
+                        for (let j = 1; j <= 9; j++){
+                            if (check(board, row, col, j)) {
+                                board[row][col] = j;
+                                if (solve(board)) return true;
+                                board[row][col] = 0;
+                            }
+                        }
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                let j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+        function generate(board){
+            let nums = [1,2,3,4,5,6,7,8,9];
+            for (let row = 0; row < 9; row++){
+                for (let col = 0; col < 9; col++){
+                    if (board[row][col] === 0){
+                        shuffle(nums);
+                        for (let num of nums){
+                            if (check(board, row, col, num)) {
+                                board[row][col] = num;
+                                if (generate(board)) return true;
+                                board[row][col] = 0;
+                            }
+                        }
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        function genGames(){
+            for (let i = 0; i < 9; i++){
+                for (let j = 0; j < 9; j++) {
+                    board[i][j] = 0;
+                    solution[i][j] = 0;
+                }
+            }
+            generate(board);
+            for (let i = 0; i < 9; i++){
+                for (let j = 0; j < 9; j++){
+                    solution[i][j] = board[i][j];
+                }
+            }
+            let cellGo = 40;
+            while (cellGo > 0){
+                let row = Math.floor(Math.random() * 9);
+                let col = Math.floor(Math.random() * 9);
+                if (board[row][col] !== 0){
+                    board[row][col] = 0;
+                    cellGo--;
+                }
+            }
+        }
+        function render(){
+            let board1 = document.getElementById("board");
+            board1.innerHTML = "";
+
+            for (let i = 0; i < 9; i++){
+                let row = document.createElement("div");
+                row.classList.add("row");
+
+                for (let j = 0; j < 9; j++){
+                    let cell = document.createElement("input");
+
+                    cell.maxLength = 1;
+                    cell.type = "text";
+                    cell.inputMode = "numeric";
+
+                    if (i % 3 === 0 && i !== 0){
+                        cell.style.borderTop = "5px solid black";
+                    }
+
+                    if (j % 3 === 0 && j !== 0){
+                        cell.style.borderLeft = "5px solid black";
+                    }
+
+                    if (board[i][j] !== 0){
+                        cell.value = board[i][j];
+                        cell.readOnly = true;
+                        cell.style.backgroundColor = "#bbb";
+                    }
+
+                    cell.addEventListener("input", () => {
+                        let v = parseInt(cell.value);
+                        if (cell.value === ""){
+                            board[i][j] = 0;
+                            return;
+                        }
+                        if (isNaN(v) || v < 1 || v > 9){
+                            cell.value = "";
+
+                            status.textContent = "Can't put that";
+
+                            setTimeout(() => {
+                                status.textContent = "";
+                            }, 2000);
+
+                            return;
+                        }
+
+                        let old = board[i][j];
+                        board[i][j] = 0;
+
+                        if (check(board, i, j, v) && solution[i][j] === v){
+                            board[i][j] = v;
+
+                            cell.classList.add("pulse");
+
+                            setTimeout(() => {
+                                cell.classList.remove("pulse");
+                            }, 200);
+
+                        } else {
+                            board[i][j] = old;
+
+                            cell.value = "";
+
+                            status.textContent = "Wrong";
+
+                            setTimeout(() => {
+                                status.textContent = "";
+                            }, 2000);
+                        }
+                    });
+
+                    row.appendChild(cell);
+                }
+
+                board1.appendChild(row);
+            }
+        }
+    genGames();
+    render();
+    </script>
+</body>
