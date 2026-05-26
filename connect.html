@@ -410,8 +410,14 @@
             const board = document.getElementById("board");
 
             const submitBtn = document.getElementById("submitBtn");
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = 0.5;
+            submitBtn.style.cursor = "not-allowed";
 
             const clearBtn = document.getElementById("clearBtn");
+            clearBtn.disabled = true;
+            clearBtn.style.opacity = 0.5;
+            clearBtn.style.cursor = "not-allowed";
 
             function renderBoard() {
 
@@ -462,6 +468,36 @@
                     button.classList.add("selected");
                     selected.push(button.dataset.content);
                 }
+                if (selected.length === 0) {
+                    clearBtn.disabled = true;
+                    clearBtn.style.opacity = 0.5;
+                    clearBtn.style.cursor = "not-allowed";
+                }
+                else {
+                    clearBtn.disabled = false;
+                    clearBtn.style.opacity = 1;
+                    clearBtn.style.cursor = "pointer";
+                }
+                if (selected.length < 4) {
+                    submitBtn.disabled = true;
+                    submitBtn.style.opacity = 0.5;
+                    submitBtn.style.cursor = "not-allowed";
+                }
+                else if (selected.length === 4) {
+                    submitBtn.disabled = false;
+                    submitBtn.style.opacity = 1;
+                    submitBtn.style.cursor = "pointer";
+                    if (pastGuesses.includes([...selected].sort().join(","))) {
+                        submitBtn.disabled = true;
+                        submitBtn.style.opacity = 0.5;
+                        submitBtn.style.cursor = "not-allowed";
+                    }
+                    else {
+                        submitBtn.disabled = false;
+                        submitBtn.style.opacity = 1;
+                        submitBtn.style.cursor = "pointer";
+                    }
+                }
                 saveProgress();
             }
             function restoreSelections() {
@@ -475,6 +511,12 @@
             clearBtn.addEventListener("click", () => {
 
                 selected = [];
+                clearBtn.disabled = true;
+                clearBtn.style.opacity = 0.5;
+                clearBtn.style.cursor = "not-allowed";
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = 1;
+                submitBtn.style.cursor = "pointer";
 
                 document.querySelectorAll(".tile").forEach(button =>
                         button.classList.remove("selected"));
@@ -516,7 +558,7 @@
             );
         }
             submitBtn.addEventListener("click", () => {
-
+                const currentGuess = [...selected].sort().join(",");
                 if (selected.length !== 4) {
                     document.getElementById("status").textContent = "Choose 4 tiles";
                     document.getElementById("status").style.visibility = "visible";
@@ -526,7 +568,7 @@
                     }, 2000);
                     return;
                 }
-                if (pastGuesses.includes([...selected].sort())) {
+                if (pastGuesses.includes(currentGuess)) {
                     document.getElementById("status").textContent = "Already guessed that";
                     document.getElementById("status").style.visibility = "visible";
                     setTimeout(() => {
@@ -535,7 +577,7 @@
                     }, 2000);
                     return;
                 }
-                pastGuesses.push([[...selected].sort()]);
+                pastGuesses.push(currentGuess);
                 const chosenCards = unsolvedCards.filter(card => selected.includes(card.content));
                 const category = chosenCards[0].category;
                 const correct = chosenCards.every(card => card.category === category);
@@ -554,6 +596,12 @@
                         });
                         unsolvedCards = unsolvedCards.filter(card => !selected.includes(card.content));
                         selected = [];
+                        submitBtn.disabled = true;
+                        submitBtn.style.opacity = 0.5;
+                        submitBtn.style.cursor = "not-allowed";
+                        clearBtn.disabled = true;
+                        clearBtn.style.opacity = 0.5;
+                        clearBtn.style.cursor = "not-allowed";
                         renderBoard();
                         saveProgress();
                         document.querySelectorAll(".row").forEach(row => {
@@ -594,6 +642,9 @@
                     mistakes++;
                     updateMistakes();
                     const status = document.getElementById("status");
+                    clearBtn.disabled = true;
+                    clearBtn.style.opacity = 0.5;
+                    clearBtn.style.cursor = "not-allowed";
                     if (oneAway) {
                         status.textContent = "One away...";
                         status.style.visibility = "visible";
@@ -621,6 +672,9 @@
 
                     }, 400);
                     selected = [];
+                    submitBtn.disabled = true;
+                    submitBtn.style.opacity = 0.5;
+                    submitBtn.style.cursor = "not-allowed";
                     saveProgress();
                     if (mistakes >= 4) {
                         status.style.visibility = "visible";
