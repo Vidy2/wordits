@@ -406,16 +406,17 @@
             if (words.includes(guess)){
                 let temp = word.split("");
                 for (let i = 0; i < res.length; i++) {
+                    used[i] = false;
                     const input = res[i];
                     input.readOnly = true;
                     if (guess[i] === temp[i]) {
-                        used[i] = true;
+                        temp[i] = null;
                     }
                 };
                 for (let i = 0; i < res.length; i++) {
                     const input = res[i];
                     const index = temp.indexOf(guess[i]);
-                    if (guess[i] === temp[i]) {
+                    if (word[i] === guess[i]) {
                         input.style.backgroundColor = "#57af54";
                         keyButtons[guess[i]].style.backgroundColor = "#57af54";
                         input.readOnly = true;
@@ -429,7 +430,7 @@
                         }, 200);
                         await new Promise(resolve => setTimeout(resolve, 250));
                     }
-                    else if (index !== -1 && !used[index]) {
+                    else if (index !== -1) {
                         input.style.backgroundColor = "#cccc4f";
                         keyButtons[guess[i]].style.backgroundColor = "#cccc4f";
                         keyButtons[guess[i]].style.color = "white";

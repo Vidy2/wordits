@@ -545,9 +545,13 @@
                     updateMistakes();
                     const status = document.getElementById("status");
                     if (oneAway) {
-                        status.textContent = "One away";
+                        setTimeout(() => {
+                            status.textContent = "One Away";
+                        }, 2000);
                     } else {
-                        status.textContent = "Incorrect";
+                        setTimeout(() => {
+                            status.textContent = "Incorrect";
+                        }, 2000);
                     }
                     const selectedButtons = document.querySelectorAll(".selected");
                     selectedButtons.forEach(btn => {
