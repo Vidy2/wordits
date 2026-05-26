@@ -338,7 +338,8 @@
                     solvedGroups,
                     unsolvedCards,
                     selected,
-                    mistakes
+                    mistakes,
+                    pastGuesses
                 };
 
                 let now = new Date();
@@ -360,6 +361,7 @@
                 return null;
             }
             cookieSetter();
+            let pastGuesses = [];
             const colors = [
                 "#f9df6d",
                 "#a0c35a",
@@ -393,6 +395,8 @@
             const savedState = loadProgress();
 
             if (savedState) {
+
+                passedGuesses = savedState.pastGuesses || [];
 
                 solvedGroups = savedState.solvedGroups || [];
 
@@ -522,6 +526,16 @@
                     }, 2000);
                     return;
                 }
+                if (pastGuesses.includes([...selected].sort())) {
+                    document.getElementById("status").textContent = "Already guessed that";
+                    document.getElementById("status").style.visibility = "visible";
+                    setTimeout(() => {
+                        document.getElementById("status").textContent = "";
+                        document.getElementById("status").style.visibility = "hidden";
+                    }, 2000);
+                    return;
+                }
+                pastGuesses.push([[...selected].sort()]);
                 const chosenCards = unsolvedCards.filter(card => selected.includes(card.content));
                 const category = chosenCards[0].category;
                 const correct = chosenCards.every(card => card.category === category);
