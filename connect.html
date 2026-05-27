@@ -509,15 +509,13 @@
             }
 
             clearBtn.addEventListener("click", () => {
-                clearBtn.disabled = true;
-                clearBtn.style.opacity = 0.5;
                 selected = [];
                 clearBtn.disabled = true;
                 clearBtn.style.opacity = 0.5;
                 clearBtn.style.cursor = "not-allowed";
-                submitBtn.disabled = false;
-                submitBtn.style.opacity = 1;
-                submitBtn.style.cursor = "pointer";
+                submitBtn.disabled = true;
+                submitBtn.style.opacity = 0.5;
+                submitBtn.style.cursor = "not-allowed";
 
                 document.querySelectorAll(".tile").forEach(button =>
                         button.classList.remove("selected"));
