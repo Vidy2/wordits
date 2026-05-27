@@ -294,6 +294,7 @@
             <div id="board"></div>
 
             <div class="controls">
+                <button id="shuffle">Shuffle</button>
                 <button id="clearBtn">Deselect All</button>
                 <button id="submitBtn">Submit</button>
             </div>
@@ -409,6 +410,8 @@
 
             const board = document.getElementById("board");
 
+            const shuffleBtn = document.getElementById("shuffle");
+
             const submitBtn = document.getElementById("submitBtn");
             submitBtn.disabled = true;
             submitBtn.style.opacity = 0.5;
@@ -507,6 +510,11 @@
                         }
                     });
             }
+
+            shuffleBtn.addEventListener("click", () => {
+                unsolvedCards = unsolvedCards.sort(() => Math.random() - 0.5);
+                renderBoard();
+            });
 
             clearBtn.addEventListener("click", () => {
                 selected = [];
