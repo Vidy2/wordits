@@ -473,7 +473,8 @@
             }
 
             clearBtn.addEventListener("click", () => {
-
+                clearBtn.disabled = true;
+                clearBtn.style.opacity = 0.5;
                 selected = [];
 
                 document.querySelectorAll(".tile").forEach(button =>
