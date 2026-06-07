@@ -128,6 +128,11 @@
             gap: 0.3rem;
             display: flex
         }
+        #keyboard button {
+            display: inline-block;
+            font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif;
+            margin-bottom: 0.3rem;
+        }
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.08); }
@@ -175,40 +180,40 @@
                 <input oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '')" inputmode="none" maxlength="1">
             </div>
         </div>
-        <div id = "keyboard">
+    <div id = "keyboard">
             <div class="row1">
-                <button id = "q"style="display: inline-block">Q</button>
-                <button id = "w"style="display: inline-block">W</button>
-                <button id = "e"style="display: inline-block">E</button>
-                <button id = "r"style="display: inline-block">R</button>
-                <button id = "t"style="display: inline-block">T</button>
-                <button id = "y"style="display: inline-block">Y</button>
-                <button id = "u"style="display: inline-block">U</button>
-                <button id = "i"style="display: inline-block">I</button>
-                <button id = "o"style="display: inline-block">O</button>
-                <button id = "p"style="display: inline-block">P</button>
+                <button id = "q">Q</button>
+                <button id = "w">W</button>
+                <button id = "e">E</button>
+                <button id = "r">R</button>
+                <button id = "t">T</button>
+                <button id = "y">Y</button>
+                <button id = "u">U</button>
+                <button id = "i">I</button>
+                <button id = "o">O</button>
+                <button id = "p">P</button>
             </div>
             <div class="row2">
-                <button id = "a"style="display: inline-block">A</button>
-                <button id = "s"style="display: inline-block">S</button>
-                <button id = "d"style="display: inline-block">D</button>
-                <button id = "f"style="display: inline-block">F</button>
-                <button id = "g"style="display: inline-block">G</button>
-                <button id = "h"style="display: inline-block">H</button>
-                <button id = "j"style="display: inline-block">J</button>
-                <button id = "k"style="display: inline-block">K</button>
-                <button id = "l"style="display: inline-block">L</button>
+                <button id = "a">A</button>
+                <button id = "s">S</button>
+                <button id = "d">D</button>
+                <button id = "f">F</button>
+                <button id = "g">G</button>
+                <button id = "h">H</button>
+                <button id = "j">J</button>
+                <button id = "k">K</button>
+                <button id = "l">L</button>
             </div>
             <div class="row3">
-                <button id = "enter"style="display: inline-block">Enter</button>
-                <button id = "z"style="display: inline-block">Z</button>
-                <button id = "x"style="display: inline-block">X</button>
-                <button id = "c"style="display: inline-block">C</button>
-                <button id = "v"style="display: inline-block">V</button>
-                <button id = "b"style="display: inline-block">B</button>
-                <button id = "n"style="display: inline-block">N</button>
-                <button id = "m"style="display: inline-block">M</button>
-                <button id = "backspace"style="display: inline-block">Backspace</button>
+                <button id = "enter">Enter</button>
+                <button id = "z">Z</button>
+                <button id = "x">X</button>
+                <button id = "c">C</button>
+                <button id = "v">V</button>
+                <button id = "b">B</button>
+                <button id = "n">N</button>
+                <button id = "m">M</button>
+                <button id = "backspace">Backspace</button>
             </div>
         </div>
         <p id ="status"></p>
@@ -217,7 +222,7 @@
             <p style="font-size: 1.5rem; font-weight: bold; color:green;">You won!</p>
         </dialog>
         <button class="corner-link" onclick="pulse(this);location.href='infinitel.html'">Infinite</button>
-        <button class="corner-link-2" onclick="pulse(this);location.href='issue.html'">Spanish Unlimtited</button>
+        <button class="corner-link-2" onclick="pulse(this);location.href='issue.html'">Spanish Unlimited</button>
         <button class="corner-link-3" onclick="pulse(this);location.href='connect.html'">Connect</button>
     </section>
 
