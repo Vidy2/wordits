@@ -621,7 +621,11 @@
                             updateMistakes();
                             const status = document.getElementById("status");
                             submitBtn.style.opacity = 0;
+                            submitBtn.disabled = true;
+                            clearBtn.disabled = true;
                             clearBtn.style.opacity = 0;
+                            shuffleBtn.style.opacity = 0;
+                            shuffleBtn.disabled = true;
                             if (mistakes === 0) {
                                 status.textContent = "Perfect! No mistakes.";
                                 status.style.visibility = "visible";
@@ -692,8 +696,8 @@
                         submitBtn.disabled = true;
                         clearBtn.disabled = true;
                         clearBtn.style.opacity = 0;
-                        submitBtn.disabled = true;
-                        clearBtn.disabled = true;
+                        shuffleBtn.style.opacity = 0;
+                        shuffleBtn.disabled = true;
 
                         const remainingCategories = {};
 
