@@ -247,32 +247,25 @@
         function render(){
             let board1 = document.getElementById("board");
             board1.innerHTML = "";
-
             for (let i = 0; i < 9; i++){
                 let row = document.createElement("div");
                 row.classList.add("row");
-
                 for (let j = 0; j < 9; j++){
                     let cell = document.createElement("input");
-
                     cell.maxLength = 1;
                     cell.type = "text";
                     cell.inputMode = "numeric";
-
                     if (i % 3 === 0 && i !== 0){
                         cell.style.borderTop = "5px solid black";
                     }
-
                     if (j % 3 === 0 && j !== 0){
                         cell.style.borderLeft = "5px solid black";
                     }
-
                     if (board[i][j] !== 0){
                         cell.value = board[i][j];
                         cell.readOnly = true;
                         cell.style.backgroundColor = "#bbb";
                     }
-
                     cell.addEventListener("input", () => {
                         let v = parseInt(cell.value);
                         if (cell.value === ""){
@@ -281,44 +274,31 @@
                         }
                         if (isNaN(v) || v < 1 || v > 9){
                             cell.value = "";
-
                             status.textContent = "Can't put that";
-
                             setTimeout(() => {
                                 status.textContent = "";
                             }, 2000);
-
                             return;
                         }
-
                         let old = board[i][j];
                         board[i][j] = 0;
-
                         if (check(board, i, j, v) && solution[i][j] === v){
                             board[i][j] = v;
-
                             cell.classList.add("pulse");
-
                             setTimeout(() => {
                                 cell.classList.remove("pulse");
                             }, 200);
-
                         } else {
                             board[i][j] = old;
-
                             cell.value = "";
-
                             status.textContent = "Wrong";
-
                             setTimeout(() => {
                                 status.textContent = "";
                             }, 2000);
                         }
                     });
-
                     row.appendChild(cell);
                 }
-
                 board1.appendChild(row);
             }
         }
