@@ -342,9 +342,15 @@
                     mistakes,
                     pastGuesses
                 };
-
+                if (state.mistakes >= 4 || solvedGroups.length === 4) {
+                    submitBtn.style.opacity = 0;
+                    submitBtn.disabled = true;
+                    clearBtn.disabled = true;
+                    clearBtn.style.opacity = 0;
+                    shuffleBtn.style.opacity = 0;
+                    shuffleBtn.disabled = true;
+                }
                 let now = new Date();
-
                 let midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
                 document.cookie =  "connectState=" + encodeURIComponent(JSON.stringify(state)) + ";expires=" + midnight.toUTCString() + "; path=/";}
             function loadProgress() {
@@ -396,16 +402,12 @@
             const savedState = loadProgress();
 
             if (savedState) {
-
-                passedGuesses = savedState.pastGuesses || [];
-
+                pastGuesses = savedState.pastGuesses || [];
                 solvedGroups = savedState.solvedGroups || [];
-
                 unsolvedCards = savedState.unsolvedCards || unsolvedCards;
-
                 selected = savedState.selected || [];
-
                 mistakes = savedState.mistakes || 0;
+                lose = mistakes >= 4 || solvedGroups.length === 4;
             }
 
             const board = document.getElementById("board");
@@ -747,6 +749,7 @@
             setTimeout(() => {
                 renderBoard();
                 updateMistakes();
+                saveProgress();
             }, 250);
         }
 
