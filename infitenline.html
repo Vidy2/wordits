@@ -229,6 +229,11 @@
             <p style="font-size: 1.5rem; font-weight: bold; color: red;text-align: center;">You lost!</p>
             <p id="score" style="font-size:1.5rem;font-weight:bold;color:red;text-align: center;"></p>
         </dialog>
+        <dialog id="tlose">
+            <button class="close-btn" aria-label="close">&times;</button>
+            <p style="font-size: 1.5rem; font-weight: bold; color: red;text-align: center;">You ran out of time!</p>
+            <p id="score" style="font-size:1.5rem;font-weight:bold;color:green;text-align: center;"></p>
+        </dialog>
     <script>
         let countdown;
         let numgot = 0;
@@ -288,6 +293,10 @@
         lose.querySelector(".close-btn").addEventListener("click", () => {
             lose.close();
         });
+        const tlose = document.getElementById("tlose");
+        tlose.querySelector(".close-btn").addEventListener("click", () => {
+            tlose.close();
+        });
         const q = document.getElementById("q");
         const w = document.getElementById("w");
         const e = document.getElementById("e");
@@ -342,11 +351,12 @@
                 if (secs <= 0) {
                     clearInterval(countdown);
                     document.getElementById("score").textContent = `You got ${numgot} words.`;
-                    lose.showModal();
+                    tlose.showModal();
                     document.querySelectorAll("input").forEach(inp => {
+                        if (input.id === "minutesInput") return;
                         inp.readOnly = true;
                     });
-                    status.textContent = `You lose, it was: ${word.toUpperCase()}`;
+                    status.textContent = `You ran out of time, it was: ${word.toUpperCase()}`;
                     status.style.color = "red";
                 }
             }, 1000);
@@ -492,6 +502,7 @@
                     guessNum += 1;
                     if (guessNum > 5){
                         document.querySelectorAll("input").forEach(inp => {
+                            if (input.id === "minutesInput") return;
                             inp.readOnly = true;
                         });
                         status.textContent = `You lose, it was: ${word.toUpperCase()}`;
