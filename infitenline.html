@@ -232,7 +232,7 @@
         <dialog id="tlose">
             <button class="close-btn" aria-label="close">&times;</button>
             <p style="font-size: 1.5rem; font-weight: bold; color: red;text-align: center;">You ran out of time!</p>
-            <p id="score" style="font-size:1.5rem;font-weight:bold;color:green;text-align: center;"></p>
+            <p id="tscore" style="font-size:1.5rem;font-weight:bold;color:green;text-align: center;"></p>
         </dialog>
     <script>
         let countdown;
@@ -350,11 +350,10 @@
                 document.getElementById("timer").textContent = dispMins + ":" + dispSecs;
                 if (secs <= 0) {
                     clearInterval(countdown);
-                    document.getElementById("score").textContent = `You got ${numgot} words.`;
+                    document.getElementById("tscore").textContent = `You got ${numgot} words.`;
                     tlose.showModal();
                     document.querySelectorAll("input").forEach(inp => {
-                        if (inp.id === "minutesInput") return;
-                        inp.readOnly = true;
+                        if (inp.id !== "minutesInput") inp.readOnly = true;
                     });
                     status.textContent = `You ran out of time, it was: ${word.toUpperCase()}`;
                     status.style.color = "red";
@@ -502,8 +501,7 @@
                     guessNum += 1;
                     if (guessNum > 5){
                         document.querySelectorAll("input").forEach(inp => {
-                            if (input.id === "minutesInput") return;
-                            inp.readOnly = true;
+                            if (inp.id !== "minutesInput") inp.readOnly = true;
                         });
                         status.textContent = `You lose, it was: ${word.toUpperCase()}`;
                         status.style.color = "red";
