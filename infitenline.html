@@ -353,7 +353,7 @@
                     document.getElementById("score").textContent = `You got ${numgot} words.`;
                     tlose.showModal();
                     document.querySelectorAll("input").forEach(inp => {
-                        if (input.id === "minutesInput") return;
+                        if (inp.id === "minutesInput") return;
                         inp.readOnly = true;
                     });
                     status.textContent = `You ran out of time, it was: ${word.toUpperCase()}`;
