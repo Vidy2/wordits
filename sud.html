@@ -69,10 +69,34 @@
             color: red;
             margin-top: 1rem;
         }
-        #board {
+        #whole {
             display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+        #board {
+            display: inline-flex;
             flex-direction: column;
             align-items: center;
+        }
+        #numbers {
+            display: flex;
+            gap: 0.3rem;
+            margin-top: 1rem;
+        }
+        #numbers button {
+            border-radius:0px;
+            width: clamp(2rem, 10vw, 6rem);
+            height: clamp(2rem, 10vw, 6rem);
+            font-size: clamp(1rem, 5vw, 3rem);
+        }
+        #numbers button:not(:disabled):hover {
+            background-color: #ddd;
+        }
+        #numbers button:not(:disabled):active {
+            background-color: #ccc;
         }
         .close-btn {
             position: absolute;
@@ -82,9 +106,6 @@
             border: none;
             font-size: 1.5rem;
             cursor: pointer;
-        }
-        .row1 {
-            margin-top: 0.5rem;
         }
         .corner-link {
             position: fixed;
@@ -128,7 +149,7 @@
         .row {
             margin-bottom: 0.2rem;
             gap: 0.3rem;
-            display: flex
+            display: inline-flex
         }
         @keyframes pulse {
             0% { transform: scale(1); }
@@ -136,7 +157,7 @@
             100% { transform: scale(1); }
         }
         @media (max-width: 600px) {
-            #keyboard button {
+            #numbers button {
                 font-size: 0.7rem;
                 padding: 0.3rem 0.45rem;
             }
@@ -166,12 +187,40 @@
 <body>
     <section>
         <h1>Knockoff Sud</h1>
-        <div id = "board"></div>
+        <div id="whole">
+            <div id = "board"></div>
+            <div id="numbers">
+                <div class="row1">
+                    <button id = "1">1</button>
+                    <button id = "2">2</button>
+                    <button id = "3">3</button>
+                </div>
+                <div class="row2">
+                    <button id = "4">4</button>
+                    <button id = "5">5</button>
+                    <button id = "6">6</button>
+                </div>
+                <div class="row3">
+                    <button id = "7">7</button>
+                    <button id = "8">8</button>
+                    <button id = "9">9</button>
+                </div>
+            </div>
+        </div>
         <p id="status"></p>
     </section>
     <script>
         let board = Array(9).fill().map(() => Array(9).fill(0));
         const status = document.getElementById("status");
+        const button1 = document.getElementById("1");
+        const button2 = document.getElementById("2");
+        const button3 = document.getElementById("3");
+        const button4 = document.getElementById("4");
+        const button5 = document.getElementById("5");
+        const button6 = document.getElementById("6");
+        const button7 = document.getElementById("7");
+        const button8 = document.getElementById("8");
+        const button9 = document.getElementById("9");
         let solution = Array(9).fill().map(() => Array(9).fill(0));
         function check(board, row, col, num){
             for (let i = 0; i < 9; i++){
@@ -245,6 +294,17 @@
             }
         }
         function render(){
+            let selectedCell = null;
+            document.querySelectorAll("#numbers button").forEach(button => {
+                button.addEventListener("mousedown", (e) => {
+                    e.preventDefault();
+                });
+                button.addEventListener("click", () => {
+                    if (!selectedCell || selectedCell.readOnly) return;
+                    selectedCell.value = button.textContent;
+                    selectedCell.dispatchEvent(new Event("input"));
+                });
+            });
             let board1 = document.getElementById("board");
             board1.innerHTML = "";
             for (let i = 0; i < 9; i++){
@@ -253,6 +313,8 @@
                 for (let j = 0; j < 9; j++){
                     let cell = document.createElement("input");
                     cell.maxLength = 1;
+                    cell.dataset.row = i;
+                    cell.dataset.col = j;
                     cell.type = "text";
                     cell.inputMode = "numeric";
                     if (i % 3 === 0 && i !== 0){
@@ -266,6 +328,9 @@
                         cell.readOnly = true;
                         cell.style.backgroundColor = "#bbb";
                     }
+                    cell.addEventListener("focus", (e) => {
+                        selectedCell = e.target;
+                    });
                     cell.addEventListener("input", () => {
                         let v = parseInt(cell.value);
                         if (cell.value === ""){
@@ -288,6 +353,19 @@
                             setTimeout(() => {
                                 cell.classList.remove("pulse");
                             }, 200);
+                            let remaining = 0;
+                            for (let r = 0; r < 9; r++) {
+                                for (let c = 0; c < 9; c++) {
+                                    if (solution[r][c] === v && board[r][c] === 0) {
+                                        remaining++;
+                                    }
+                                }
+                            }
+                            if (remaining === 0) {
+                                const button = document.getElementById(String(v));
+                                button.disabled = true;
+                                button.style.color = "gray";
+                            }
                         } else {
                             board[i][j] = old;
                             cell.value = "";
