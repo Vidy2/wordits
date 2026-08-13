@@ -415,7 +415,7 @@
                         await new Promise(resolve => setTimeout(resolve, 250));
                     } else {
                         input.style.backgroundColor = "#7e8281";
-                        if (keyButtons[guess[i]].style.backgroundColor !== "#cccc4f" || keyButtons[guess[i]].style.backgroundColor !== "#57af54"){
+                        if (keyButtons[guess[i]].style.backgroundColor !== "#cccc4f" && keyButtons[guess[i]].style.backgroundColor !== "#57af54"){
                             keyButtons[guess[i]].style.backgroundColor = "#7e8281";
                         }
                         keyButtons[guess[i]].style.color = "white";
