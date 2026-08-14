@@ -414,12 +414,15 @@
                         temp[i] = null;
                     }
                 };
+                const gree = "rgb(87, 175, 84)";
+                const yell = "rgb(204, 204, 79)";
+                const gra = "rgb(126, 130, 129)";
                 for (let i = 0; i < res.length; i++) {
                     const input = res[i];
                     const index = temp.indexOf(guess[i]);
                     if (word[i] === guess[i]) {
-                        input.style.backgroundColor = "#57af54";
-                        keyButtons[guess[i]].style.backgroundColor = "#57af54";
+                        input.style.backgroundColor = gree;
+                        keyButtons[guess[i]].style.backgroundColor = gree;
                         keyButtons[guess[i]].style.color = "white";
                         input.readOnly = true;
                         input.classList.add("pulse");
@@ -433,9 +436,9 @@
                         await new Promise(resolve => setTimeout(resolve, 250));
                     }
                     else if (index !== -1) {
-                        input.style.backgroundColor = "#cccc4f";
-                        if (keyButtons[guess[i]].style.backgroundColor !== "#57af54"){
-                            keyButtons[guess[i]].style.backgroundColor = "#cccc4f";
+                        input.style.backgroundColor = yell;
+                        if (getComputedStyle(keyButtons[guess[i]]).backgroundColor !== gree && getComputedStyle(keyButtons[guess[i]]).backgroundColor !== yell) {
+                            keyButtons[guess[i]].style.backgroundColor = yell;
                         }
                         keyButtons[guess[i]].style.color = "white";
                         temp[index] = null;
@@ -450,9 +453,9 @@
                         }, 200);
                         await new Promise(resolve => setTimeout(resolve, 250));
                     } else {
-                        input.style.backgroundColor = "#7e8281";
-                        if (keyButtons[guess[i]].style.backgroundColor !== "#cccc4f" && keyButtons[guess[i]].style.backgroundColor !== "#57af54"){
-                            keyButtons[guess[i]].style.backgroundColor = "#7e8281";
+                        input.style.backgroundColor = gra;
+                        if (getComputedStyle(keyButtons[guess[i]]).backgroundColor !== yell && getComputedStyle(keyButtons[guess[i]]).backgroundColor !== gree){
+                            keyButtons[guess[i]].style.backgroundColor = gra;
                         }
                         keyButtons[guess[i]].style.color = "white";
                         input.classList.add("pulse");
