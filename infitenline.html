@@ -84,41 +84,14 @@
         .row1 {
             margin-top: 0.5rem;
         }
-        .corner-link {
+        .corner-links {
+            display: flex;
             position: fixed;
             bottom: 1vw;
             right: 1vw;
-            background: #fff;
-            padding: 0.3rem 0.6rem;
-            border-radius: 5px;
-            font-size: 1.5vw;
-        }
-        .corner-link-2 {
-            position: fixed;
-            bottom: 1vw;
-            right: 6.5vw;
-            background: #fff;
-            padding: 0.3rem 0.6rem;
-            border-radius: 5px;
-            font-size: 1.5vw;
-        }
-        .corner-link-3 {
-            position: fixed;
-            bottom: 1vw;
-            right: 13vw;
-            background: #fff;
-            padding: 0.3rem 0.6rem;
-            border-radius: 5px;
-            font-size: 1.5vw;
-        }
-        .corner-link-4 {
-            position: fixed;
-            bottom: 1vw;
-            right: 27vw;
-            background: #fff;
-            padding: 0.3rem 0.6rem;
-            border-radius: 5px;
-            font-size: 1.5vw;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            font-size: 2vw;
         }
         .pulse {
             animation: pulse 0.2s ease;
@@ -149,9 +122,6 @@
             }
             .row3 {
                 font-size:0.2vw;
-            }
-            .corner-link-2 {
-                right: 12vw;
             }
             input {
                 width: 2.5rem;
@@ -214,10 +184,14 @@
             </div>
         </div>
         <p id ="status"></p>
-        <button class="corner-link" onclick="location.href='index.html';pulse(this)">Daily</button>
-        <button class="corner-link-3" onclick="pulse(this);location.href='issue.html'">Spanish Unlimited</button>
-        <button class="corner-link-2" onclick="pulse(this);location.href='infinitel.html'">Infinite</button>
-        <button class="corner-link-4" onclick="time.showModal();">Timer</button>
+        <div class="corner-links">
+            <button onclick="pulse(this);location.href='infinitel.html'">Infinite</button>
+            <button onclick="pulse(this);location.href='issue.html'">Spanish Unlimited</button>
+            <button onclick="pulse(this);location.href='connect.html'">Connect</button>
+            <button onclick="pulse(this);location.href='index.html'">Daily</button>
+            <button onclick="pulse(this);location.href='sud.html'">Sud</button>
+            <button onclick="pulse(this);time.showModal();">Timer</button>
+        </div>
         <dialog id="time">
             <button class="close-btn" aria-label="close">&times;</button>
             <input type="number" id="minutesInput" style="margin-bottom: 10px; width: 100px; height: 40px;" placeholder="Enter minutes" step="0.25" min="0.25" value="1">
