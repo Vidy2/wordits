@@ -191,6 +191,7 @@
             <button onclick="pulse(this);location.href='index.html'">Daily</button>
             <button onclick="pulse(this);location.href='sud.html'">Sud</button>
             <button onclick="pulse(this);time.showModal();">Timer</button>
+            <button onclick="pulse(this);settings.showModal();">Settings</button>
         </div>
         <dialog id="time">
             <button class="close-btn" aria-label="close">&times;</button>
@@ -208,6 +209,11 @@
             <p style="font-size: 1.5rem; font-weight: bold; color: red;text-align: center;">You ran out of time!</p>
             <p id="tscore" style="font-size:1.5rem;font-weight:bold;color:green;text-align: center;"></p>
         </dialog>
+        <dialog id="settings">
+            <input type="checkbox" name="aniSkip" value="aniSkipy" id="skipAni" style="width:20px;height:20px;"> Skip Animation
+            <button onclick="pulse(this)" id="save">Save</button>
+            <button class="close-btn" aria-label="close">&times;</button>
+        </dialog>
     <script>
         let countdown;
         let numgot = 0;
@@ -215,6 +221,7 @@
         let dis = false;
         let words = [];
         let guessNum = 0;
+        let ana = true;
         function pulse(element) {
             element.classList.remove("pulse");
 
@@ -270,6 +277,10 @@
         const tlose = document.getElementById("tlose");
         tlose.querySelector(".close-btn").addEventListener("click", () => {
             tlose.close();
+        });
+        const settings = document.getElementById("settings");
+        settings.querySelector(".close-btn").addEventListener("click", () => {
+            settings.close();
         });
         const teme = document.getElementById("time");
         teme.querySelector(".close-btn").addEventListener("click", () => {
@@ -338,6 +349,15 @@
                 }
             }, 1000);
         }
+        const skipAni = document.querySelector('input[name="aniSkip"][value="aniSkipy"]');
+        document.getElementById("save").addEventListener("click", function() {
+            if (skipAni.checked) {
+                ana = false;
+            }
+            else {
+                ana = true;
+            }
+        });
         document.getElementById("keyboard").addEventListener("click", (e) => {
             if (e.target.tagName !== "BUTTON") return;
             const key = e.target.id;
@@ -428,15 +448,17 @@
                         keyButtons[guess[i]].style.backgroundColor = gree;
                         keyButtons[guess[i]].style.color = "white";
                         input.readOnly = true;
-                        input.classList.add("pulse");
-                        setTimeout(() => {
-                            input.classList.remove("pulse");
-                        }, 200);
-                        keyButtons[guess[i]].classList.add("pulse");
-                        setTimeout(() => {
-                            keyButtons[guess[i]].classList.remove("pulse");
-                        }, 200);
-                        await new Promise(resolve => setTimeout(resolve, 250));
+                        if (ana){
+                            input.classList.add("pulse");
+                            setTimeout(() => {
+                                input.classList.remove("pulse");
+                            }, 200);
+                            keyButtons[guess[i]].classList.add("pulse");
+                            setTimeout(() => {
+                                keyButtons[guess[i]].classList.remove("pulse");
+                            }, 200);
+                            await new Promise(resolve => setTimeout(resolve, 250));
+                        }
                     }
                     else if (index !== -1 && !used[index]) {
                         input.style.backgroundColor = yell;
@@ -446,30 +468,34 @@
                         keyButtons[guess[i]].style.color = "white";
                         temp[index] = null;
                         used[index] = true;
-                        input.classList.add("pulse");
-                        setTimeout(() => {
-                            input.classList.remove("pulse");
-                        }, 200);
-                        keyButtons[guess[i]].classList.add("pulse");
-                        setTimeout(() => {
-                            keyButtons[guess[i]].classList.remove("pulse");
-                        }, 200);
-                        await new Promise(resolve => setTimeout(resolve, 250));
+                        if (ana){
+                            input.classList.add("pulse");
+                            setTimeout(() => {
+                                input.classList.remove("pulse");
+                            }, 200);
+                            keyButtons[guess[i]].classList.add("pulse");
+                            setTimeout(() => {
+                                keyButtons[guess[i]].classList.remove("pulse");
+                            }, 200);
+                            await new Promise(resolve => setTimeout(resolve, 250));
+                        }
                     } else {
                         input.style.backgroundColor = gra;
                         if (getComputedStyle(keyButtons[guess[i]]).backgroundColor !== yell && getComputedStyle(keyButtons[guess[i]]).backgroundColor !== gree){
                             keyButtons[guess[i]].style.backgroundColor = gra;
                         }
                         keyButtons[guess[i]].style.color = "white";
-                        input.classList.add("pulse");
-                        setTimeout(() => {
-                            input.classList.remove("pulse");
-                        }, 200);
-                        keyButtons[guess[i]].classList.add("pulse");
-                        setTimeout(() => {
-                            keyButtons[guess[i]].classList.remove("pulse");
-                        }, 200);
-                        await new Promise(resolve => setTimeout(resolve, 250));
+                        if (ana){
+                            input.classList.add("pulse");
+                            setTimeout(() => {
+                                input.classList.remove("pulse");
+                            }, 200);
+                            keyButtons[guess[i]].classList.add("pulse");
+                            setTimeout(() => {
+                                keyButtons[guess[i]].classList.remove("pulse");
+                            }, 200);
+                            await new Promise(resolve => setTimeout(resolve, 250));
+                        }
                     }
                     input.style.color = "white";
                     input.readOnly = true;
