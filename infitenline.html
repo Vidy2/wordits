@@ -101,6 +101,10 @@
             gap: 0.3rem;
             display: flex
         }
+        input::placeholder{
+            font-size: 1.25rem;
+            text-align: center;
+        }
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.08); }
@@ -194,8 +198,8 @@
             <button onclick="pulse(this);settings.showModal();">Settings</button>
         </div>
         <dialog id="time">
-            <button class="close-btn" aria-label="close">&times;</button>
-            <input type="number" id="minutesInput" style="margin-bottom: 10px; width: 100px; height: 40px;" placeholder="Enter minutes" step="0.25" min="0.25" value="1">
+            <button class="close-btn" style ="top: 2.5px; right: 2.5px;" aria-label="close">&times;</button>
+            <input type="number" id="minutesInput" style="margin-bottom: 10px; width: 200px; height: 60px; border-radius: 20px;" placeholder="Enter minutes" step="0.25" min="0.25">
             <button id="startTimBtn" onclick="startTimer();">Start Timer</button>
         </dialog>
     </section>
