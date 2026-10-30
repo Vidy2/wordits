@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word</title>
+    <link rel="icon" type="image/png" href="./word-thing.png">
+    <style>
+        html, body {
+            height: 100%;
+            overflow-x: hidden;
+        }
+        body {
+            font-family: inherit, serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+            overflow-x: hidden;
+            background-size: cover;
+            background-repeat: no-repeat;
+            min-height: 100dvh;
+            background-color: #e5e5da;
+        }
+
+        section {
+            padding: clamp(1rem, 4vw, 2rem);
+            text-align:center;
+        }
+
+        h1 {
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            text-align: center;
+        }
+
+        a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        button {
+            width: 7dvh;
+            height: 7dvh;
+            border-radius: 40%;
+        }
+        input{
+            text-transform: uppercase;
+            width: clamp(3rem, 12vw, 5rem);
+            height: clamp(3rem, 12vw, 5rem);
+            text-align: center;
+            font-size: 2rem;
+            transition: background-color 0.3s ease;
+            background-color: #ccccbb;
+            border:none;
+        }
+        dialog {
+            position: relative;
+            padding: 2rem;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            }
+        #status {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            color: darkgreen;
+            margin-top: 1rem;
+        }
+        #board {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .row1 {
+            margin-top: 0.5rem;
+        }
+        .corner-link {
+            position: fixed;
+            bottom: 1vw;
+            right: 1vw;
+            background: #fff;
+            padding: 0.3rem 0.6rem;
+            border-radius: 5px;
+            font-size: 1.5vw;
+        }
+        .corner-links {
+            display: flex;
+            position: fixed;
+            bottom: 1vw;
+            right: 1vw;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            font-size: 2vw;
+        }
+        .pulse {
+            animation: pulse 0.2s ease;
+        }
+        .row {
+            margin-bottom: 1rem;
+            gap: 0.3rem;
+            display: flex;
+            height: 100%;
+            flex-direction: column;
+        }
+        .selected{
+            background-color: lightblue;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+        @media (max-width: 600px) {
+            #keyboard button {
+                font-size: 0.7rem;
+                padding: 0.3rem 0.45rem;
+            }
+            h2 {
+                font-size: 2rem;
+            }
+            .row1 {
+                font-size:0.2vw;
+            }
+            .row2 {
+                font-size:0.2vw;
+            }
+            .row3 {
+                font-size:0.2vw;
+            }
+            input {
+                width: 2.5rem;
+                height: 2.5rem;
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id = "board">
+    </div>
+    <script>
+        const board = document.getElementById("board");
+        async function getStrandsData() {
+            const response = await fetch('https://strandsgames.org/api/v1/strands/today/', {
+                headers: {
+                'Accept': 'application/json'
+                }
+            });
+            const data = await response.json();
+            console.log('Theme Clue:', data.theme_clue);
+            console.log('Spangram:', data.spangram);
+            return data;
+        }
+
+        async function makeBoard() {
+            const puzzle = await getStrandsData();
+            for (let i = 0; i < 6; i++){
+                let row = document.createElement("div");
+                row.classList.add("row");
+                board.appendChild(row);
+                for (let j = 0; j < 8; j++){
+                    let letter = document.createElement("button");
+                    letter.textContent = puzzle.grid[j][i];
+                    row.appendChild(letter);
+                    letter.addEventListener("click", () => toggleSelect(letter));
+                    letter.addEventListener("mouseenter", () => {
+                        if (event.button === 0){
+                            toggleSelect(letter);
+                        }
+                    });
+                }
+            }
+        }
+
+        function toggleSelect(button) {
+            if (button.classList.contains("selected")) {
+                button.classList.remove("selected");
+            } else {
+                button.classList.add("selected");
+            }
+        }
+        
+        makeBoard();
+    </script>
+</body>
+</html>
