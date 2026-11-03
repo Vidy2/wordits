@@ -151,12 +151,12 @@
 </head>
 <body>
     <h1 id = "SelectedWord"></h1>
-    <div id = "board">
-    </div>
+    <div id = "board"></div>
+    <button id = "checkWord" onclick="checkWord()"></button>
     <script>
         const selectedWord = document.getElementById("SelectedWord");
         let selectedLetters = [];
-        let lastSelectedButton = null;
+        let lastSelectedButton = [];
         const board = document.getElementById("board");
         async function getStrandsData() {
             const response = await fetch('https://strandsgames.org/api/v1/strands/today/', {
@@ -181,13 +181,13 @@
                     letter.textContent = puzzle.grid[j][i];
                     row.appendChild(letter);
                     letter.addEventListener("mousedown", () => {
-                        if(lastSelectedButton === null || checkIfNear(letter, lastSelectedButton)) {
+                        if(lastSelectedButton.length < 1 || checkIfNear(letter, lastSelectedButton.at(-1))) {
                             toggleSelect(letter);
                         }
                     });
 
                     letter.addEventListener("mouseenter", () => {
-                        if (event.buttons === 1 && (lastSelectedButton === null || checkIfNear(letter, lastSelectedButton))) {
+                        if (event.buttons === 1 && (lastSelectedButton.length < 1 || checkIfNear(letter, lastSelectedButton.at(-1)))) {
                             toggleSelect(letter);
                         }
                     });
@@ -205,6 +205,10 @@
             return true;
         }
 
+        function checkWord() {
+            
+        }
+
         function toggleSelect(button) {
             if (button.classList.contains("selected")) {
                 button.classList.remove("selected");
@@ -212,8 +216,9 @@
                 if (index !== -1) {
                     selectedLetters.splice(index, 1);
                 }
+                lastSelectedButton.pop();
             } else {
-                lastSelectedButton = button;
+                lastSelectedButton.push(button);
                 button.classList.add("selected");
                 selectedLetters.push(button.textContent);
             }
