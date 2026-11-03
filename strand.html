@@ -29,10 +29,10 @@
         }
 
         h1 {
-            font-size: clamp(1.8rem, 5vw, 3rem);
+            font-size: clamp(1.4rem, 4.2vw, 2.6rem);
             text-align: center;
             display: block;
-            min-height: clamp(3.5rem, 7.4vw, 4.5rem);
+            min-height: clamp(2.9rem, 6.2vw, 3.9rem);
         }
 
         a {
@@ -73,6 +73,9 @@
             flex-direction: row;
             justify-content: center;
             align-items: center;
+        }
+        #selectedWord {
+            border: black 1px;
         }
         .close-btn {
             position: absolute;
@@ -150,10 +153,12 @@
     </style>
 </head>
 <body>
-    <h1 id = "SelectedWord"></h1>
+    <h1 id = "theme"></h1>
+    <h1 id = "selectedWord"></h1>
     <div id = "board"></div>
     <script>
-        const selectedWord = document.getElementById("SelectedWord");
+        const themeHeader = document.getElementById("theme");
+        const selectedWord = document.getElementById("selectedWord");
         let selectedLetters = [];
         let lastSelectedButton = [];
         const board = document.getElementById("board");
@@ -166,6 +171,8 @@
             const data = await response.json();
             const answers = data.theme_words;
             const spangram = data.spangram;
+            const theme = data.theme_clue;
+            themeHeader.textContent = theme;
             console.log('Theme Clue:', data.theme_clue);
             console.log('Spangram:', data.spangram);
             return { ...data, answers, spangram };
