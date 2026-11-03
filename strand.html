@@ -117,7 +117,7 @@
             border-bottom: 0.3rem solid #000;
         }
         .selected{
-            background-color: lightblue;
+            background-color: #DBD8C5;
         }
         @keyframes pulse {
             0% { transform: scale(1); }
@@ -152,7 +152,6 @@
 <body>
     <h1 id = "SelectedWord"></h1>
     <div id = "board"></div>
-    <button id = "checkWord" onclick="checkWord()"></button>
     <script>
         const selectedWord = document.getElementById("SelectedWord");
         let selectedLetters = [];
@@ -165,9 +164,11 @@
                 }
             });
             const data = await response.json();
+            const answers = data.theme_words;
+            const spangram = data.spangram;
             console.log('Theme Clue:', data.theme_clue);
             console.log('Spangram:', data.spangram);
-            return data;
+            return { ...data, answers, spangram };
         }
 
         async function makeBoard() {
@@ -205,22 +206,33 @@
             return true;
         }
 
-        function checkWord() {
-            
+        async function checkWord(word) {
+            const puzzle = await getStrandsData();
+            if (puzzle.answers.includes(word) || word === puzzle.spangram.toUpperCase()) {
+                for (const button of lastSelectedButton) {
+                    button.classList.remove("selected");
+                    button.disabled = true;
+                    button.style.backgroundColor = "#AEDFEE";
+                    lastSelectedButton = [];
+                    selectedLetters = [];
+                    selectedWord.textContent = '';
+                }
+            }
         }
 
         function toggleSelect(button) {
-            if (button.classList.contains("selected")) {
+            if (button.classList.contains("selected") && button === lastSelectedButton.at(-1)) {
                 button.classList.remove("selected");
-                const index = selectedLetters.indexOf(button.textContent);
+                const index = selectedLetters.lastIndexOf(button.textContent);
                 if (index !== -1) {
                     selectedLetters.splice(index, 1);
                 }
                 lastSelectedButton.pop();
-            } else {
+            } else if (!button.classList.contains("selected")) {
                 lastSelectedButton.push(button);
                 button.classList.add("selected");
                 selectedLetters.push(button.textContent);
+                checkWord(selectedLetters.join('').toUpperCase());
             }
             selectedWord.textContent = selectedLetters.join('');
         }
