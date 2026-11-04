@@ -122,6 +122,16 @@
         .selected{
             background-color: #DBD8C5;
         }
+        #hintButton {
+            position: fixed;
+            border: 1px solid #000;
+            width: 9vw;
+            font-size: 5vw;
+            border-radius: 50%;
+            background-color: white;
+            top: 45%;
+            left: 10%;
+        }
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.08); }
@@ -155,8 +165,15 @@
 <body>
     <h1 id = "theme"></h1>
     <h1 id = "selectedWord"></h1>
-    <div id = "board"></div>
+    <div>
+        <button id = "hintButton">Hint</button>
+        <div id = "board"></div>
+    </div>
+    <h1 id = "status"></h1>
     <script>
+        let hintMeter = 0;
+        let pastWords = [];
+        const status = document.getElementById("status");
         const themeHeader = document.getElementById("theme");
         const selectedWord = document.getElementById("selectedWord");
         let selectedLetters = [];
@@ -172,10 +189,9 @@
             const answers = data.theme_words;
             const spangram = data.spangram;
             const theme = data.theme_clue;
+            const all_solutions = data.all_solutions;
             themeHeader.textContent = theme;
-            console.log('Theme Clue:', data.theme_clue);
-            console.log('Spangram:', data.spangram);
-            return { ...data, answers, spangram };
+            return { ...data, answers, spangram, all_solutions};
         }
 
         async function makeBoard() {
@@ -192,6 +208,9 @@
                         if(lastSelectedButton.length < 1 || checkIfNear(letter, lastSelectedButton.at(-1))) {
                             toggleSelect(letter);
                         }
+                    });
+                    letter.addEventListener("mouseup", () => {
+                        checkWord(selectedLetters.join('').toUpperCase());
                     });
 
                     letter.addEventListener("mouseenter", () => {
@@ -215,20 +234,51 @@
 
         async function checkWord(word) {
             const puzzle = await getStrandsData();
-            if (puzzle.answers.includes(word) || word === puzzle.spangram.toUpperCase()) {
-                for (const button of lastSelectedButton) {
+            for (const button of lastSelectedButton) {
                     button.classList.remove("selected");
-                    button.disabled = true;
-                    button.style.backgroundColor = "#AEDFEE";
                     lastSelectedButton = [];
                     selectedLetters = [];
                     selectedWord.textContent = '';
-                }
             }
+            if (puzzle.answers.includes(word) || word === puzzle.spangram.toUpperCase()) {
+                status.textContent = "Good job!";
+                setTimeout(() => {
+                    status.textContent = "";
+                }, 1000);
+                return 1;
+            } else if (puzzle.all_solutions.includes(word)) {
+                if (pastWords.includes(word)) {
+                    status.style.color = "red";
+                    status.textContent = "You've already used this word";
+                    setTimeout(() => {
+                        status.textContent = "";
+                        status.style.color = "green";
+                    }, 1000);
+                    return 0;
+                }
+                status.textContent = "You got a word";
+                setTimeout(() => {
+                    status.textContent = "";
+                }, 1000);
+                hintMeter++;
+                console.log(hintMeter);
+                pastWords.push(word);
+                return 2;
+            }
+            return 0;
         }
 
         function toggleSelect(button) {
             if (button.classList.contains("selected") && button === lastSelectedButton.at(-1)) {
+                checkWord(selectedLetters.join('').toUpperCase());
+                if (checkWord(selectedLetters.join('').toUpperCase()) !== 1) {
+                    for (const button of lastSelectedButton) {
+                        button.classList.remove("selected");
+                    }
+                    lastSelectedButton = [];
+                    selectedLetters = [];
+                    selectedWord.textContent = '';
+                }
                 button.classList.remove("selected");
                 const index = selectedLetters.lastIndexOf(button.textContent);
                 if (index !== -1) {
@@ -239,7 +289,6 @@
                 lastSelectedButton.push(button);
                 button.classList.add("selected");
                 selectedLetters.push(button.textContent);
-                checkWord(selectedLetters.join('').toUpperCase());
             }
             selectedWord.textContent = selectedLetters.join('');
         }
