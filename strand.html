@@ -133,6 +133,7 @@
             border: 1px solid #000;
             width: 9vw;
             font-size: 2vw;
+            color: gray;
             border-radius: 999px;
             background-color: white;
             top: 45%;
@@ -173,7 +174,7 @@
     <h1 id = "theme"></h1>
     <h1 id = "selectedWord"></h1>
     <div>
-        <button id = "hintButton">Hint</button>
+        <button id = "hintButton" onclick="if(hintMeter >= 3) {pulse(this); hintMeter -= 3; hintButton.style.background = `linear-gradient(to right, black ${Math.min(hintMeter * 100 / 3, 100)}%, white ${Math.min(100 - (hintMeter * 100 / 3), 0)}%)`;}">Hint</button>
         <div id = "board"></div>
     </div>
     <h1 id = "status"></h1>
@@ -188,6 +189,14 @@
         let selectedLetters = [];
         let lastSelectedButton = [];
         const board = document.getElementById("board");
+        function pulse(element) {
+            element.classList.remove("pulse");
+
+            void element.offsetWidth;
+
+            element.classList.add("pulse");
+        }
+
         async function getStrandsData() {
             const response = await fetch('https://strandsgames.org/api/v1/strands/today/', {
                 headers: {
@@ -232,6 +241,10 @@
             }
         }
 
+        function doHint() {
+            
+        }
+
         function checkIfNear(button1, button2) {
             const row1 = button1.parentElement;
             const row2 = button2.parentElement;
@@ -244,6 +257,7 @@
 
         async function checkWord(word) {
             const puzzle = await getStrandsData();
+            console.log(puzzle);
             for (const button of lastSelectedButton) {
                 button.classList.remove("selected");
                 button.classList.add("unselected");
@@ -271,7 +285,7 @@
                     status.textContent = "";
                 }, 1000);
                 hintMeter++;
-                hintButton.style.backgroundColor = `rgba(255, 255, 255, ${1 - hintMeter * 1 / 3})`;
+                hintButton.style.background = `linear-gradient(to right, black ${Math.min(hintMeter * 100 / 3, 100)}%, white ${Math.min(100 - (hintMeter * 100 / 3), 0)}%)`;
                 console.log(hintMeter);
                 pastWords.push(word);
             }
