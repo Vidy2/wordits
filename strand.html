@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Word</title>
+    <title>Strand</title>
     <link rel="icon" type="image/png" href="./word-thing.png">
     <style>
         html, body {
@@ -122,6 +122,12 @@
         .selected{
             background-color: #DBD8C5;
         }
+        .unselected {
+            background-color: #e5e5da;
+        }
+        .correct {
+            background-color: #AEDFEE;
+        }
         #hintButton {
             position: fixed;
             border: 1px solid #000;
@@ -205,6 +211,7 @@
                 board.appendChild(row);
                 for (let j = 0; j < 8; j++){
                     let letter = document.createElement("button");
+                    letter.classList.add("unselected");
                     letter.textContent = puzzle.grid[j][i];
                     row.appendChild(letter);
                     letter.addEventListener("mousedown", () => {
@@ -212,9 +219,9 @@
                             toggleSelect(letter);
                         }
                     });
-                    letter.addEventListener("mouseup", () => {
-                        toggleSelect(letter);
-                    });
+                    // letter.addEventListener("mouseup", () => {
+                    //     toggleSelect(letter);
+                    // });
 
                     letter.addEventListener("mouseenter", (event) => {
                         if (event.buttons === 1 && (lastSelectedButton.length < 1 || checkIfNear(letter, lastSelectedButton.at(-1)))) {
@@ -237,34 +244,27 @@
 
         async function checkWord(word) {
             const puzzle = await getStrandsData();
-            lastSelectedButton = [];
-            selectedLetters = [];
             for (const button of lastSelectedButton) {
                 button.classList.remove("selected");
+                button.classList.add("unselected");
             }
-            selectedWord.textContent = '';
-            if (puzzle.answers.includes(word) || word === puzzle.spangram.toUpperCase()) {
-                if (pastWords.includes(word)) {
-                    status.style.color = "red";
-                    status.textContent = "You've already used this word";
-                    setTimeout(() => {
-                        status.textContent = "";
-                        status.style.color = "green";
-                    }, 1000);
-                    return;
-                }
-                if (puzzle.answers.includes(word) || word === puzzle.spangram.toUpperCase()) {
-                    for (const button of lastSelectedButton) {
-                        button.classList.remove("selected");
-                        button.disabled = true;
-                        button.style.backgroundColor = "#AEDFEE";
-                    }
-                    return;
-                }
+            if (pastWords.includes(word)) {
+                status.style.color = "red";
+                status.textContent = "You've already used this word";
+                setTimeout(() => {
+                    status.textContent = "";
+                    status.style.color = "green";
+                }, 1000);
+            } else if (puzzle.answers.includes(word) || word === puzzle.spangram.toUpperCase()) {
+                pastWords.push(word);
                 status.textContent = "Good job!";
                 setTimeout(() => {
                     status.textContent = "";
                 }, 1000);
+                for (const button of lastSelectedButton) {
+                    button.classList.remove("unselected");
+                    button.classList.add("correct");
+                }
             } else if (puzzle.all_solutions.includes(word)) {
                 status.textContent = "You got a word";
                 setTimeout(() => {
@@ -275,19 +275,18 @@
                 console.log(hintMeter);
                 pastWords.push(word);
             }
+            lastSelectedButton = [];
+            selectedLetters = [];
+            selectedWord.textContent = '';
         }
 
         function toggleSelect(button) {
+            if (button.classList.contains("correct")) return;
             if (button.classList.contains("selected") && button === lastSelectedButton.at(-1)) {
-                button.classList.remove("selected");
-                const index = selectedLetters.lastIndexOf(button.textContent);
-                if (index !== -1) {
-                    selectedLetters.splice(index, 1);
-                }
-                lastSelectedButton.pop();
-                checkWord(selectedLetters.join(''.toUpperCase()));
+                checkWord(selectedLetters.join('').toUpperCase());
             } else if (!button.classList.contains("selected")) {
                 lastSelectedButton.push(button);
+                button.classList.remove("unselected");
                 button.classList.add("selected");
                 selectedLetters.push(button.textContent);
             }
